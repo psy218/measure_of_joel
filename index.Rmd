@@ -61,7 +61,8 @@ joel_words %>%
 ---
 # How amazing is Joel?   
 
-Please indicate Joel’s level of amazingness and wonderfulness, using the following scale.  
+Please indicate Joel’s level of **amazingness** and **wonderfulness**, using the following scale.  
+<br></br>
 1: Joel is amazing and wonderful! 
 2: Joel is SO amazing and wonderful!  
 3: Joel is SO VERY amazing and wonderful!  
@@ -187,11 +188,11 @@ dataset %>%
 
 ---
 # Which Joel-related conspiracy is most likely true?    
-
-1 = Joel is actually immortal and has been walking the earth for about 150 years now - hence his wise nature
-2 = Joel is actually a plant in the lab, put here to make us smarter and more productive by holding stimulating conversations and setting a good example
-3 = Joel is a twin, and they tag team life, switching out each day
-4 = Lily, Joel's adorable dog, is actually named after Lil Wayne
+<br></br>
+1 = Joel is actually immortal and has been walking the earth for about 150 years now - hence his wise nature   
+2 = Joel is actually a plant in the lab, put here to make us smarter and more productive by holding stimulating conversations and setting a good example   
+3 = Joel is a twin, and they tag team life, switching out each day   
+4 = Lily, Joel's adorable dog, is actually named after Lil Wayne    
 ```{r eval = FALSE, include = FALSE}
 dataset %>% 
   count(joel_conspiracy) %>% 
