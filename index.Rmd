@@ -7,16 +7,20 @@ output:
     lib_dir: libs
     self_contained: true
     nature:
+      ratio: 16:9
       highlightStyle: github
       highlightLines: true
       countIncrementalSlides: false
+    seal: false
 ---
 
 exclude: true
 
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE)
-knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, dpi = 300, fig.align = "center", fig.width = 10, fig.height = 6)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE,
+                      #fig.retina = 3, fig.align = "center", fig.height = 8,  fig.width = 12
+                        fig.width=9, fig.height=4, fig.retina=3, out.width = "100%")
 library(tidyverse)
 source(here::here("data_analysis", "preprocessing.r"))
 
@@ -27,17 +31,29 @@ here::here("r_function") %>%
 
 ---
 
+class: inverse, center, bottom
+
+background-image: url(fig/joel_bg.jpg)
+background-size: cover
+
+### In honour of Joel’s birthday we present… 
+# An examination into the beliefs and feelings toward<br>**Joel Le Forestier**: A survey study
+
+
+
+---
+
 # Intro  
 
 In celebration of the birth of **Joel Le Forestier**, we created [a survey of Joel-centric questions](https://utorontopsych.az1.qualtrics.com/jfe/form/SV_0TcVdupdXsRkJJc)<sup>1</sup>. 
 
-Raw data file<sup>2</sup> and r-syntax files are available at [Github](https://github.com/psy218/measure_of_joel). 
+`r nrow(dataset)` people from the Intergroup Relations Lab, SAM Lab, SPRQL, and other friends came together to triangulate the meaning of Joel.  
 
 
 .footnote[
-[1] MAKE SURE TO CLOSE COLLECTION BEFORE UPLOADING!  
-[2] anonymous
+[1] Raw data file and r-syntax files are available at [Github](https://github.com/psy218/measure_of_joel).  
 ]
+
 ---
 class: inverse, middle, center
 
@@ -45,25 +61,27 @@ class: inverse, middle, center
 
 ---
 
-# Words to Describe Joel  
+# What do we think of when we think of *Joel*? 
+
 ```{r}
 library(wordcloud)
 joel_words %>% 
+  filter(word != "gay") %>% 
   count(word, sort = T) %>% 
   with(wordcloud::wordcloud(word,
                             freq = n,
                             min.freq = 1,
                             max.words = 100,
                             random.order = F,
-                            colors = viridis::viridis(n = 30, option = "D")))
+                            colors = c(viridis::viridis(n = 10, option = "C", begin = .3), "#D55E00")))
 ```
 
 ---
-# How amazing is Joel?   
 
-Please indicate Joel’s level of **amazingness** and **wonderfulness**, using the following scale.  
+# How amazing and wonderful is Joel?  
+
 <br></br>
-1: Joel is amazing and wonderful! 
+1: Joel is amazing and wonderful!   
 2: Joel is SO amazing and wonderful!  
 3: Joel is SO VERY amazing and wonderful!  
 4: Joel is literally the MOST amazing and wonderful!  
@@ -71,92 +89,72 @@ Please indicate Joel’s level of **amazingness** and **wonderfulness**, using t
 6: Words cannot fully describe JUST HOW amazing and wonderful Joel is. This cannot be measured with a 6-point Likert scale, you fools. 
 
 ---
-# How amazing is Joel?   
+# How amazing and wonderful is Joel?  
 
-Please indicate Joel’s level of **amazingness** and **wonderfulness**, using the following scale.  
 
 ```{r}
 dataset %>% 
-  count(joel_amazingness) %>% 
-  mutate(prop = round( n / sum(n)*100)) %>% 
-  inner_join(joel_amazingness, by = c(joel_amazingness = "option_level")) %>% 
+  mutate(joel_amazingness = factor(joel_amazingness,
+                                   levels = 1:6)) %>% 
+  count(joel_amazingness, .drop = FALSE) %>% 
+  drop_na(joel_amazingness) %>% 
+  mutate(prop = round( n / sum(n, na.rm = T)*100)) %>% 
+  inner_join(joel_amazingness %>% 
+               mutate(option_level = factor(option_level,
+                                                levels = 1:6)), 
+             by = c(joel_amazingness = "option_level")) %>% 
   # mutate_at("joel_amazingness", as.factor) %>% 
   mutate(joel_amazingness = factor(joel_amazingness,
                                    levels = joel_amazingness,
-                                   labels = stringr::str_wrap(option_text, 25))) %>%
-  pie_chart(., "joel_amazingness")
+                                   labels = stringr::str_wrap(option_text, 20))) %>%
+  bar_graph("joel_amazingness")
+  # pie_chart(., "joel_amazingness")
 
 ```
 
 ---
-# Which of the following Joels would you most love to see?  
+
+# Which of the following Joels would you most love to see?    
 
 ```{r}
 dataset %>% 
   count(joel_version) %>% 
   inner_join(joel_version, by = c(joel_version = "option_level")) %>% 
+  arrange(n) %>% 
   mutate(prop = round( n / sum(n)*100),
          joel_version = factor(joel_version,
-                               levels = 1:4,
+                               levels = joel_version,
                                labels = stringr::str_wrap(option_text, 20))) %>%
   # mutate_at("joel_version", as.factor) %>% 
-  bar_graph("joel_version")
+  bar_graph("joel_version") 
   # pie_chart("joel_version")
 ```
 
 ---
-# If Joel was a character in a book, which genre(s) would he appear in?     
+# If Joel was a character in a book, choose up to two genres he would appear in  
 ```{r}
-joel_movie_data = dataset %>% 
-  select(pid, starts_with("joel_movie-")) %>% 
+dataset %>%
+  select(pid, starts_with("joel_movie-")) %>%
   pivot_longer(starts_with("joel_movie-"),
                names_to = "genre",
                values_to = "genre_count",
                names_prefix = "joel_movie-",
-               values_drop_na = T) %>% 
-  count(genre) %>% 
+               values_drop_na = T) %>%
+  count(genre) %>%
   mutate(genre = str_replace(genre, "Darkcomedy", "Dark Comedy"),
-         prop = round( n / sum(n)*100))
-
-joel_movie_pos = joel_movie_data %>% 
-  mutate(csum = rev(cumsum(rev(n))), 
-         pos = n/2 + lead(csum, 1),
-         pos = if_else(is.na(pos), n/2, pos))
-  # arrange(desc(genre)) %>% 
-  # mutate(ypos = cumsum(prop) - 0.5*prop) %>% 
-
-joel_movie_data %>%  
-  ggplot(aes(x = "",
-               y = n,
-               fill = fct_inorder(genre))) +
-geom_col(width = 1, color = 1) +
-        # geom_bar(stat = "identity",
-    #          width = 1) + 
-    coord_polar(theta = "y") + 
-    geom_text(aes(label = paste0(n, "\n(", prop,"%)")),
-                  position = position_stack(vjust = .5)) +
-    xlab(NULL) +
-    scale_y_continuous(breaks = joel_movie_pos$pos,
-                       labels = joel_movie_data$genre) + 
-    viridis::scale_fill_viridis(guide = "none",
-                                discrete = T,
-                                begin = .2) +
-  theme(axis.ticks = element_blank(),
-        axis.title = element_blank(),
-        axis.text = element_text(size = 9), 
-        legend.position = "none", # Removes the legend
-        panel.background = element_rect(fill = "white"))
-```
-
-
----
-# If Joel was a character in a book, which genre(s) would he appear in?     
-```{r}
-joel_movie_data %>% 
+         prop = round( n / sum(n)*100)) %>% 
   mutate(option_text = genre,
          genre = fct_reorder(genre, n)) %>% 
-  bar_graph("genre")
+  bar_graph("genre") 
 ```
+
+---
+class: inverse, top, left
+
+background-image: url(fig/four_season.jpg)
+background-size: cover 
+
+# Which of the following seasons best describes Joel?     
 
 ---
 # Which of the following seasons best describes Joel?     
@@ -167,51 +165,37 @@ dataset %>%
   inner_join(joel_season, by = c(joel_season = "option_level")) %>% 
   mutate(joel_season = factor(joel_season,
                               levels = joel_season, 
-                              labels = option_text),
+                              labels = stringr::str_to_title(option_text)),
          option_text = str_to_title(option_text)) %>% 
   pie_chart("joel_season")
 ```
----
-# Which of the following seasons best describes Joel?   
-```{r}
-dataset %>% 
-  count(joel_season) %>% 
-  mutate(prop = round( n / sum(n)*100)) %>% 
-  inner_join(joel_season, by = c(joel_season = "option_level")) %>% 
-  mutate(joel_season = factor(joel_season,
-                              levels = joel_season, 
-                              labels = option_text),
-         option_text = str_to_title(option_text)) %>%
-  bar_graph("joel_season")
-```
+
+<!-- --- -->
+
+<!-- # Which of the following seasons best describes Joel?    -->
+<!-- ```{r} -->
+<!-- dataset %>%  -->
+<!--   count(joel_season) %>%  -->
+<!--   mutate(prop = round( n / sum(n)*100)) %>%  -->
+<!--   inner_join(joel_season, by = c(joel_season = "option_level")) %>%  -->
+<!--   mutate(joel_season = factor(joel_season, -->
+<!--                               levels = joel_season,  -->
+<!--                               labels = option_text), -->
+<!--          option_text = str_to_title(option_text)) %>% -->
+<!--   bar_graph("joel_season") -->
+<!-- ``` -->
 
 
 ---
+
 # Which Joel-related conspiracy is most likely true?    
-<br></br>
-1 = Joel is actually immortal and has been walking the earth for about 150 years now - hence his wise nature   
-2 = Joel is actually a plant in the lab, put here to make us smarter and more productive by holding stimulating conversations and setting a good example   
-3 = Joel is a twin, and they tag team life, switching out each day   
-4 = Lily, Joel's adorable dog, is actually named after Lil Wayne    
-```{r eval = FALSE, include = FALSE}
-dataset %>% 
-  count(joel_conspiracy) %>% 
-  mutate(prop = round( n / sum(n)*100)) %>% 
-  inner_join(joel_conspiracy, by = c(joel_conspiracy = "option_level")) %>% 
-  mutate(joel_conspiracy = factor(joel_conspiracy,
-                              levels = joel_conspiracy, 
-                              labels = stringr::str_wrap(option_text, 20)),
-         option_text = str_to_title(option_text)) %>% 
-  pie_chart("joel_conspiracy")
-```
 
----
-# Which Joel-related conspiracy is most likely true?  
 ```{r}
 dataset %>% 
   count(joel_conspiracy) %>% 
   mutate(prop = round( n / sum(n)*100)) %>% 
   inner_join(joel_conspiracy, by = c(joel_conspiracy = "option_level")) %>% 
+  arrange(n) %>% 
   mutate(joel_conspiracy = factor(joel_conspiracy,
                               levels = joel_conspiracy, 
                               labels = stringr::str_wrap(option_text, 20)),
@@ -220,12 +204,33 @@ dataset %>%
 ```
 
 ---
-# Who would win in a battle of wits: Joel or a goose?   
+# Who would win in a battle of wits: **Joel** or a **goose**?   
+.pull-left[
+<!-- ![](fig/goose.jpeg) -->
+```{r}
+knitr::include_graphics("fig/goose.jpeg")
+```
+
+]
+.pull-right[
+<!-- ![](fig/joel.png) -->
+```{r}
+knitr::include_graphics("fig/joel1.png")
+```
+]
+
+---
+# Who would win in a battle of wits: **Joel** or a **goose**?   
 ```{r}
 dataset %>% 
-  count(joel_goose) %>% 
+  mutate(joel_goose = factor(joel_goose, 
+                             levels = 1:4)) %>% 
+  count(joel_goose, .drop = FALSE) %>% 
+  drop_na(joel_goose) %>% 
   mutate(prop = round( n / sum(n)*100)) %>% 
-  inner_join(joel_goose, by = c(joel_goose = "option_level")) %>% 
+  inner_join(joel_goose %>% 
+               mutate(option_level = factor(option_level)), by = c(joel_goose = "option_level")) %>% 
+  arrange(n) %>% 
   mutate(joel_goose = factor(joel_goose,
                               levels = joel_goose, 
                               labels = stringr::str_wrap(option_text, 20)),
@@ -239,6 +244,7 @@ dataset %>%
 ---
 # How many times do you want to wish Joel a Happy Birthday?   
 
+We asked everyone how many times they’d like to wish you a happy birthday. Collectively, we’d like to wish you a happy birthday `r sum(dataset$joel_bdaywishes, na.rm = T)` times.”
 ```{r}
 dataset %>% 
   mutate(bday_wish_max = ifelse(joel_bdaywishes == max(joel_bdaywishes, na.rm = T), "max", "other")) %>% 
@@ -262,6 +268,50 @@ dataset %>%
   theme_classic() +
   coord_flip() 
 ```
-*Note*. The average number of birthday wishes is indicated by the dashed line.  
+
+
+---
+# Birthday Wishes   
+```{r}
+bday_msgs %>% 
+  dplyr::select(from = "subj_name", message = "bday_msg") %>% 
+  DT::datatable()
+```
+---
+# Birthday Wishes   
+```{r}
+bday_words %>% 
+  count(word, sort = T) %>% 
+  with(wordcloud::wordcloud(word,
+                            freq = n,
+                            min.freq = 1,
+                            max.words = 100,
+                            random.order = F,
+                            colors = viridis::viridis(n = 30, option = "D")))
+```
+
+
+---
+# Summary  
+
+We examined the beliefs and feelings toward **Joel Le Forestier**. 
+According to the `r nrow(dataset)` affiliates of Joel, ...
+- Joel's level of amazing and wonderful cannot be neither fully described in words nor measured with a 6-point Likert scale
+- Joel must learn to be fluent in Italian with a Sicillian accent  
+- Joel is most likely to be a character in Dark comedy  
+- Joel is like the Fall
+- Joel's wise nature can be explained by his immortality and his 150 years on the earth
+- Joel's chances of winning a battle of wits against a goose is inconclusive until more information about the goose is made available   
+
+
+---
+class: left, center 
+
+background-image: url(fig/lily.jpeg)
+background-position: right
+
+.pull-left[
+# Thank you!
+]
 
 

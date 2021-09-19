@@ -14,6 +14,16 @@ dataset = read_csv(here::here("data", "moj_raw_data.csv"),
   rowid_to_column("pid")
 
 
+#' bday messages 
+bday_msgs = read_csv(here::here("data", "moj_bday_msgs.csv"), 
+                     col_names = read_csv(here::here("data", "moj_bday_msgs.csv"), 
+                                          col_names = T,
+                                          skip = 1,
+                                          n_max = 0) %>% 
+                       colnames(),
+                     skip = 3) 
+
+
 #---- data processing -----
 #' clean up column names so that it's easy to process  
 dataset = dataset %>% 
@@ -32,7 +42,7 @@ dataset = dataset %>%
 #----- processing for word cloud-----  
 #' preparing joel descriptors for word cloud 
 joel_words = dataset %>% 
-select(joel_descriptors.2:joel_descriptors.4) %>% 
+  select(joel_descriptors.2:joel_descriptors.4) %>% 
   rowid_to_column("pid") %>% 
   pivot_longer(cols = joel_descriptors.2:joel_descriptors.4,
                names_to = "word_rank",
@@ -41,6 +51,29 @@ select(joel_descriptors.2:joel_descriptors.4) %>%
   drop_na(word) %>% 
   mutate_at("word", tolower)
 
+#' tokenizing b-day msgs 
+bday_words = bday_msgs %>% 
+  rowid_to_column("sender") %>% 
+  mutate_at("bday_msg", ~stringr::str_replace_all(., c(":heart:" = "\U1F496",
+                                                       ":hugging_face:" = "\U1F917",
+                                                       ":partying_face:" = "\U1F973",
+                                                       ":sparkling_heart:" = "\U1F496",
+                                                       ":star-struck:" = "\U1F929",
+                                                       ":nerd_face:" = "\U1F913",
+                                                       ":partying_face:" = "\U1F973",
+                                                       ":heart_eyes:" = "\U1F60D",
+                                                       ":desert_island:" = "\U1F3DD",
+                                                       ":tropical_drink:" = "\U1F379",
+                                                       ":full_moon_with_face:" = "\U1F31D",
+                                                       ":thumb_up:" = "\U1F44D",
+                                                       ":tada:" = "\U1F389",
+                                                       ":bouquet:" = "\U1F490",
+                                                       ":champagne:" = "\U1F942"))) %>% 
+  tidytext::unnest_tokens(word, bday_msg) %>% 
+  dplyr::anti_join(tidytext::get_stopwords()) %>% 
+  group_by(sender) %>% 
+  distinct(word) %>% 
+  ungroup()
 
 #----data dictionary----
 # import dictionary for every question

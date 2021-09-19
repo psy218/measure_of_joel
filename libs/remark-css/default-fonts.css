@@ -7,4 +7,9 @@ h1, h2, h3 {
   font-family: 'Yanone Kaffeesatz';
   font-weight: normal;
 }
+
+.black { color: #000000; 
+  font-size: 100%;
+}
 .remark-code, .remark-inline-code { font-family: 'Source Code Pro', 'Lucida Console', Monaco, monospace; }
+
