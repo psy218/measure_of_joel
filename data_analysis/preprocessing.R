@@ -11,7 +11,8 @@ var_names = read_csv(here::here("data", "moj_raw_data.csv"),
 dataset = read_csv(here::here("data", "moj_raw_data.csv"), 
                    col_names = colnames(var_names),
                    skip = 3) %>% 
-  rowid_to_column("pid")
+  rowid_to_column("pid") %>% 
+  filter(Finished == 1)
 
 
 #' bday messages 
@@ -52,15 +53,15 @@ joel_words = dataset %>%
   mutate_at("word", tolower)
 
 #' tokenizing b-day msgs 
-bday_words = bday_msgs %>% 
-  rowid_to_column("sender") %>% 
-  mutate_at("bday_msg", ~stringr::str_replace_all(., c(":heart:" = "\U1F496",
+bday_msgs = bday_msgs %>% 
+  mutate_at(vars(c("bday_msg", "subj_name")), ~stringr::str_replace_all(., c(":heart:" = "\U1F496",
                                                        ":hugging_face:" = "\U1F917",
-                                                       ":partying_face:" = "\U1F973",
                                                        ":sparkling_heart:" = "\U1F496",
                                                        ":star-struck:" = "\U1F929",
+                                                       ":star2:" = "\U1F31F",
                                                        ":nerd_face:" = "\U1F913",
                                                        ":partying_face:" = "\U1F973",
+                                                       ":man_dancing:" = "\U1F57A",
                                                        ":heart_eyes:" = "\U1F60D",
                                                        ":desert_island:" = "\U1F3DD",
                                                        ":tropical_drink:" = "\U1F379",
@@ -68,12 +69,16 @@ bday_words = bday_msgs %>%
                                                        ":thumb_up:" = "\U1F44D",
                                                        ":tada:" = "\U1F389",
                                                        ":bouquet:" = "\U1F490",
-                                                       ":champagne:" = "\U1F942"))) %>% 
+                                                       ":champagne:" = "\U1F942",
+                                                       ":bottle:" = "\U1F37E"))) 
+bday_words = bday_msgs %>% 
+  rowid_to_column("sender") %>% 
   tidytext::unnest_tokens(word, bday_msg) %>% 
   dplyr::anti_join(tidytext::get_stopwords()) %>% 
   group_by(sender) %>% 
   distinct(word) %>% 
   ungroup()
+
 
 #----data dictionary----
 # import dictionary for every question

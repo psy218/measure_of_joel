@@ -39,7 +39,7 @@ background-image: url(fig/joel_bg.jpg)
 background-size: cover
 
 ## .black[In honour of Joel’s birthday we present…]<br>
-# An examination into the beliefs and feelings toward<br>**Joel Le Forestier**: A survey study 
+# An examination into the beliefs held about<br>**Joel Le Forestier**: A survey study 
 
 
 
@@ -47,13 +47,13 @@ background-size: cover
 
 # Sample    
 
-A total of `r nrow(dataset)` people from the Intergroup Relations Lab, SAM Lab, SPRQL, and other friends of Joel came together to triangulate the predominant thoughts and feelings about Joel.
+A total of `r nrow(dataset)` people from the Intergroup Relations Lab, SAM Lab, SPRQL, and other Joel Affiliates came together to triangulate the predominant thoughts and feelings about Joel.
 
 This survey was not REB-approved, but all participants gave their consent prior to participation.
 
 .pull-left[
 <br><br><br>
-.black[Participants were compensated for their time with a photo of a true supermodel, **Lily**. 
+.black[Participants were compensated for their time with a photo of a true supermodel, Lily (pictured). 
 <br><br><br><br><br><br> 
 And now, without further ado...
 ]
@@ -67,22 +67,23 @@ And now, without further ado...
 ---
 class: inverse, middle, center
 
-# Results
+# The Results
 
 ---
 
 # What do we think of when we think of *Joel*? 
 
 ```{r}
-
 joel_words %>% 
   count(word, sort = T) %>% 
   with(wordcloud::wordcloud(word,
                             freq = n,
                             min.freq = 1,
-                            max.words = 100,
+                            max.words = 500,
                             random.order = F,
-                            colors = c(viridis::viridis(n = 4, option = "D", begin = .1), "#D55E00")
+                            scale = c(4, .4),
+                            rot.per = .5,
+                            colors = c(viridis::viridis(n = 6, option = "D", begin = .1), "#D55E00")
                             )
        )
 ```
@@ -217,6 +218,10 @@ knitr::include_graphics("fig/goose.jpeg")
 ```
 ]
 
+.small[
+*Note*. Goose photo is for illustrative purposes only. Joel Affiliates were NOT provided with this absolutely terrifying photo, though we have reason to believe this goose may be the prototypical representation of geese for a significant portion of the sample.  
+]
+
 ---
 # Who would win in a battle of wits:<br>**Joel** or a **goose**?   
 ```{r}
@@ -242,7 +247,7 @@ dataset %>%
 ---
 # How many times do you want to wish Joel a Happy Birthday?   
 
-We asked everyone how many times they’d like to wish Joel a happy birthday. Collectively, we’d like to wish Joel a happy birthday `r sum(dataset$joel_bdaywishes, na.rm = T)` times. 
+We asked everyone how many times they’d like to wish Joel a happy birthday. Collectively, we’d like to wish Joel a happy birthday `r sum(dataset$joel_bdaywishes, na.rm = T)` times.   
 ```{r}
 dataset %>% 
   mutate(bday_wish_max = ifelse(joel_bdaywishes == max(joel_bdaywishes, na.rm = T), "max", "other")) %>% 
@@ -251,11 +256,11 @@ dataset %>%
              fill = bday_wish_max)) +
   geom_bar(stat = "identity",
            position = position_dodge(.8)) +
-  geom_hline(aes(yintercept = mean(dataset$joel_bdaywishes, na.rm = T)),
-             linetype = "dashed") +
+  # geom_hline(aes(yintercept = mean(dataset$joel_bdaywishes, na.rm = T)),
+  #            linetype = "dashed") +
   geom_text(aes(label = joel_bdaywishes),
               position = position_dodge(.8),
-              hjust = -0.25) +
+              hjust = 1) +
   scale_x_discrete(breaks = NULL,
                    "Affiliates of Joel") +
   scale_y_continuous("Number of B-Day Wishes",
@@ -273,36 +278,40 @@ dataset %>%
 ```{r}
 bday_msgs %>% 
   dplyr::select(from = "subj_name", message = "bday_msg") %>% 
-  DT::datatable(class = "compact", extensions = "Buttons",
+  arrange(from) %>% 
+  DT::datatable(class = "compact", extensions = "Buttons", rownames = FALSE,
                 options = list(pageLength = 4))
 ```
 
 ---
-# Birthday Wishes   
+
+# A Word Cloud of the Birthday Wishes   
 ```{r}
 bday_words %>% 
   count(word, sort = T) %>% 
   with(wordcloud::wordcloud(word,
                             freq = n,
                             min.freq = 1,
-                            max.words = 100,
+                            max.words = 500,
                             random.order = F,
-                            colors = viridis::viridis(n = 30, option = "D")))
+                            scale = c(4, .4),
+                            colors = c(viridis::viridis(n = 6, option = "D", begin = .1), "#D55E00")
+                            # colors = viridis::viridis(n = 30, option = "D")
+                            ))
 ```
 
 
 ---
-# Take home message     
+# Take home messages     
 
-We examined the beliefs and feelings toward **Joel Le Forestier**. 
-<br><br>
-According to the `r nrow(dataset)` affiliates of Joel:
-- Joel's level of amazingness and wonderfulness can neither be fully described in words nor measured with a 6-point Likert scale  
-- Joel must learn to be fluent in Italian with a Sicilian accent  
-- Joel is most likely to appear as a character in a dark comedy book 
-- Joel is like the Fall and unlike the Winter  
-- Joel's wise nature can be explained by his immortality and his 150 years on the earth   
-- Joel's chances of winning a battle of wits against a goose is inconclusive until more information about the goose is made available   
+With the current study we examined beliefs and feelings toward Joel Le Forestier using a totally unbiased sample of `r nrow(dataset)` Joel Affiliates.   
+<br>
+With our flawless sampling, measurement, and design, we draw your attention to several key take-aways:   
+- Joel’s amazingness and wonderfulness cannot be measured with a 6-point Likert scale, and we were fools to think it could be.    
+- We suggest a new life goal for Joel over his next year of life: Master the Italian language with a flawless Sicilian accent.    
+- The Joel Affiliates wish Joel happy birthday one hundred trillion, two billion, one hundred fifty million, five hundred forty eight thousand, two hundred ninety five times. If it takes one second to say *happy birthday* once, it would take nearly 3169 millennia to properly deliver on these birthday wishes. This makes sense though, because `r round((length(which(dataset$joel_conspiracy == 1)) / nrow(dataset))*100)`% of Joel Affiliates endorsed the conspiracy that Joel is actually immortal.   
+- Although more people gave Joel (compared to the goose) the edge in the Joel vs. Goose showdown, `r round((length(which(dataset$joel_goose == 2)) / nrow(dataset))*100)`% of Joel Affiliates needed more information about the goose to answer the question. Future research must explore what specific goose-related information might drive this decision, and also why are geese so scary?     
+- Joel is a very important part of many Joel Affiliates’ lives and (much like we describe Joel), we hope his birthday is remarkable, phenomenal, and sooooooooawesome!      
 
 
 ---

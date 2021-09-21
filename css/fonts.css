@@ -20,3 +20,12 @@ h1, h2, h3 {
 .black {
   color: #000000;
 }
+
+
+.small {
+  position: absolute;
+  bottom: 0.5em;
+  padding-right: 4em;
+  color: #999999;
+  font-size: 70%;
+}
