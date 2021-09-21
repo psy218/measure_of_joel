@@ -74,6 +74,7 @@ class: inverse, middle, center
 # What do we think of when we think of *Joel*? 
 
 ```{r}
+# knitr::include_graphics("fig/joel_wordcloud.png")
 joel_words %>% 
   count(word, sort = T) %>% 
   with(wordcloud::wordcloud(word,
@@ -82,7 +83,7 @@ joel_words %>%
                             max.words = 500,
                             random.order = F,
                             scale = c(4, .4),
-                            rot.per = .5,
+                            # rot.per = .5,
                             colors = c(viridis::viridis(n = 6, option = "D", begin = .1), "#D55E00")
                             )
        )
@@ -203,7 +204,7 @@ dataset %>%
 ```
 
 ---
-# Who would win in a battle of wits:<br>**Joel** or a **goose**?   
+# Who would win in a battle of wits: **Joel** or a **goose**?   
 .pull-left[
 <!-- ![](fig/goose.jpeg) -->
 ```{r}
@@ -223,7 +224,7 @@ knitr::include_graphics("fig/goose.jpeg")
 ]
 
 ---
-# Who would win in a battle of wits:<br>**Joel** or a **goose**?   
+# Who would win in a battle of wits: **Joel** or a **goose**?   
 ```{r}
 dataset %>% 
   mutate(joel_goose = factor(joel_goose, 
@@ -247,7 +248,7 @@ dataset %>%
 ---
 # How many times do you want to wish Joel a Happy Birthday?   
 
-We asked everyone how many times they’d like to wish Joel a happy birthday. Collectively, we’d like to wish Joel a happy birthday `r sum(dataset$joel_bdaywishes, na.rm = T)` times.   
+Collectively, we’d like to wish Joel a happy birthday `r sum(dataset$joel_bdaywishes, na.rm = T)` times.   
 ```{r}
 dataset %>% 
   mutate(bday_wish_max = ifelse(joel_bdaywishes == max(joel_bdaywishes, na.rm = T), "max", "other")) %>% 
@@ -298,8 +299,8 @@ bday_words %>%
                             colors = c(viridis::viridis(n = 6, option = "D", begin = .1), "#D55E00")
                             # colors = viridis::viridis(n = 30, option = "D")
                             ))
+# knitr::include_graphics("fig/bday_wordcloud.png")
 ```
-
 
 ---
 # Take home messages     
@@ -319,8 +320,6 @@ class: middle
 background-image: url(fig/lily.jpeg)
 background-position: right
 
-.pull-left[
-# Happy Birthday, <br>.pink[Joel]!
+.left[
+# .large[Happy<br>Birthday,<br>.pink[Joel]!]
 ]
-
-
