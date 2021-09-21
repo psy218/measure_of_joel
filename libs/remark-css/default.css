@@ -2,12 +2,6 @@ a, a > code {
   color: rgb(249, 38, 114);
   text-decoration: none;
 }
-
-h1, h2, h3 {
-  margin-top: 3px;
-  margin-bottom: 0;
-}
-
 .footnote {
   position: absolute;
   bottom: 3em;
@@ -21,23 +15,9 @@ h1, h2, h3 {
   color: #d6d6d6;
   text-shadow: 0 0 20px #333;
 }
-.inverse h1, .inverse h2 {
+.inverse h1, .inverse h2, .inverse h3 {
   color: #f3f3f3;
 }
-
-.inverse h3 {
-  color: #000000;
-}
-
-.gray { color: #999999; 
-  font-size: 100%;
-}
-.black { color: #000000; 
-  font-size: 100%;
-}
-.oragne { color: #D55E00; }
-.pink { color: #CC79A7; }
-
 /* Two-column layout */
 .left-column {
   color: #777;
@@ -76,16 +56,6 @@ blockquote {
   border-top: 1px solid #666;
   border-bottom: 1px solid #666;
 }
-
-.remark-slide-content h1 { font-size: 68px; }
-.remark-slide-content h2 { font-size: 58px; }
-.remark-slide-content h3 { font-size: 42px; }
-.remark-slide-content {
-  font-size: 36px;
-  padding: 0px 30px;
-}
-
-
 .remark-slide table thead th { border-bottom: 1px solid #ddd; }
 th, td { padding: 5px; }
 .remark-slide thead, .remark-slide tfoot, .remark-slide tr:nth-child(even) { background: #eee }
