@@ -40,3 +40,8 @@ h1, h2, h3 {
   font-weight: bold;
   font-size: 80pt;
 }
+
+.body {
+  font-size: 18pt;
+  color: #000000;
+}
