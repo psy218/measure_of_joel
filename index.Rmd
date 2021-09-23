@@ -286,6 +286,7 @@ bday_msgs %>%
 # A Word Cloud of the Birthday Wishes   
 ```{r}
 bday_words %>% 
+  filter(word != "br") %>% 
   count(word, sort = T) %>% 
   with(wordcloud::wordcloud(word,
                             freq = n,
@@ -305,7 +306,7 @@ bday_words %>%
 With the current study we examined **beliefs and feelings toward Joel Le Forestier** using a totally unbiased sample of `r nrow(dataset)` Joel Affiliates.   
 <br>
 With our flawless sampling and measurement, we determine key take-aways:   
-- Joel’s amazingness and wonderfulness **cannot be measured** with a Likert scale (and we were fools to think it could be).
+- Joel’s amazingness and wonderfulness **cannot be measured** with a Likert scale (and we were fools to think it could be).  
 <br>
 - We suggest a new life goal for Joel: **Master Italian** with a **Sicilian accent**.    
 <br>
