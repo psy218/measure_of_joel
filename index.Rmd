@@ -304,10 +304,14 @@ bday_words %>%
 With the current study we examined **beliefs and feelings toward Joel Le Forestier** using a totally unbiased sample of `r nrow(dataset)` Joel Affiliates.   
 <br>
 With our flawless sampling and measurement, we determine key take-aways:   
-- Joel’s amazingness and wonderfulness **cannot be measured** with a Likert scale (and we were fools to think it could be).    
+- Joel’s amazingness and wonderfulness **cannot be measured** with a Likert scale (and we were fools to think it could be).
+<br>
 - We suggest a new life goal for Joel: **Master Italian** with a **Sicilian accent**.    
+<br>
 - The Joel Affiliates wish Joel happy birthday **one hundred trillion, two billion, one hundred fifty million, five hundred forty eight thousand, two hundred ninety five times**. If it takes one second to say *happy birthday*, it would take nearly **3169 millennia** to properly deliver on these wishes. This makes sense though, because `r round((length(which(dataset$joel_conspiracy == 1)) / nrow(dataset))*100)`% of Joel Affiliates endorsed the conspiracy that Joel is **immortal**.   
+<br>
 - Although more people gave Joel the edge in the Joel vs. Goose showdown, `r round((length(which(dataset$joel_goose == 2)) / nrow(dataset))*100)`% of Joel Affiliates wanted **more information about the goose**. Future research must explore what specific goose-related information drives this decision.        
+<br>
 - Joel is a very important part of Joel Affiliates’ lives and (much like we describe Joel), we hope his birthday is **remarkable**, **phenomenal**, and **sooooooooawesome**!      
 
 
